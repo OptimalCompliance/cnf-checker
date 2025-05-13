@@ -1,18 +1,17 @@
 <script lang="ts">
   // No script needed for static content
+  import novelIcon from './assets/novel-icon.png'
 </script>
 
 <svelte:head>
   <title>CNF Requirement Checker</title>
   <meta name="description" content="Determine if your company needs to submit a Claim Notification Form for HMRC R&D tax relief." />
-  <link rel="stylesheet" href="/app.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
 </svelte:head>
 
 <main class="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900">
   <header class="text-center">
     <img
-            src="./assets/novel-icon.png"
+            src={novelIcon}
             alt="Novel"
             class="mx-auto mb-6 w-32 h-32 object-contain"
             aria-describedby="app-description"

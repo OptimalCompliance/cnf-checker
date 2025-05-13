@@ -1,6 +1,7 @@
 <script lang="ts">
   // No script needed for static content
   import novelIcon from './assets/novel-icon.png'
+  import CnfForm from "./components/CnfForm.svelte";
 </script>
 
 <svelte:head>
@@ -21,6 +22,7 @@
       Determine if your company needs to submit a Claim Notification Form for HMRC R&D tax relief.
     </p>
   </header>
+  <CnfForm/>
 </main>
 
 <style>

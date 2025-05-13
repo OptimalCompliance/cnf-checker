@@ -1,5 +1,5 @@
 // Interfaces for question config options
-interface TextConfig {
+export interface TextConfig {
     type: 'text';
     pattern?: string; // Regex pattern for validation, e.g., "[0-9A-Z]{8}"
 }
@@ -9,16 +9,16 @@ interface Period {
     end: string; // YYYY-MM-DD
 }
 
-interface PeriodSelectConfig {
+export interface PeriodSelectConfig {
     type: 'period-select';
     options: Period[]; // Array of period objects
 }
 
-interface DateConfig {
+export interface DateConfig {
     type: 'date';
 }
 
-interface BooleanConfig {
+export interface BooleanConfig {
     type: 'boolean';
 }
 
@@ -59,7 +59,7 @@ async function getCompany(companyNumber: string): Promise<CompanyProfile> {
     }
     return {
         accounting_reference_date: { day: 31, month: 3 },
-        last_accounts: { period_end_on: '2024-03-31' },
+        last_accounts: { period_end_on: '2025-03-31' },
     };
 }
 
@@ -232,7 +232,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
 // Manager to handle async generator and navigation
 class FormManager {
-    private history: { questionId: number; response: unknown }[] = [];
+    history: { questionId: number; response: unknown }[] = [];
     private generator: AsyncGenerator<Question, Result, unknown> | null = null;
     private currentQuestion: Question | null = null;
     private result: Result | null = null;

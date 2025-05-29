@@ -50,6 +50,8 @@ type Result = CnfResult | ErrorResult;
 interface CompanyProfile {
     accounting_reference_date: { day: number; month: number };
     last_accounts: { period_end_on: string };
+    name: string;
+    company_number: string;
 }
 
 // Mock Companies House API call (replace with real API)
@@ -61,6 +63,8 @@ async function getCompany(companyNumber: string): Promise<CompanyProfile> {
     return {
         accounting_reference_date: { day: 31, month: 3 },
         last_accounts: { period_end_on: '2025-03-31' },
+        name: 'Company Name Placeholder',
+        company_number: companyNumber,
     };
 }
 
@@ -109,7 +113,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
     const chosenPeriod = yield {
         id: 2,
-        label: 'Choose a period',
+        label: 'Choose a claim period',
         config: { type: 'period-select', options: periods },
         hint: 'Claim periods beginning before 1 April 2023 don\'t require a CNF.',
     } as Question;
@@ -273,6 +277,34 @@ class FormManager {
         this.history.pop();
         this.result = null;
 
+        this.generator = cnfFormLogic();
+        this.currentQuestion = (await this.generator.next()).value as Question;
+
+        for (const { response } of this.history) {
+            const next = await this.generator.next(response);
+            if (next.done) {
+                this.result = next.value as Result;
+                this.currentQuestion = null;
+                return this.result;
+            }
+            this.currentQuestion = next.value as Question;
+        }
+
+        return this.currentQuestion;
+    }
+
+    async goToQuestion(questionId: number): Promise<Question | Result | null> {
+        if (this.history.length === 0) return null;
+
+        // Find the index of the question in history
+        const questionIndex = this.history.findIndex(item => item.questionId === questionId);
+        if (questionIndex === -1) return null;
+
+        // Truncate history to keep only items up to the specified question
+        this.history = this.history.slice(0, questionIndex);
+        this.result = null;
+
+        // Restart the generator and replay the responses
         this.generator = cnfFormLogic();
         this.currentQuestion = (await this.generator.next()).value as Question;
 

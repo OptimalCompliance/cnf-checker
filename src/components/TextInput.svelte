@@ -25,7 +25,7 @@
             id={inputId}
             bind:value
             pattern={data.config.pattern}
-            class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
             aria-describedby={`error-${data.id}`}
             onkeydown={(e) => e.key === 'Enter' && handleSubmit()}
             required

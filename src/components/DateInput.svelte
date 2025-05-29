@@ -16,7 +16,7 @@
             type="date"
             id={inputId}
             bind:value
-            class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
             onchange={() => onSubmit(value)}
     />
 </div>

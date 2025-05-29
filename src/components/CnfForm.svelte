@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex flex-col items-center justify-center bg-gray-100 text-gray-900 p-4">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+    <div class="w-full max-w-xl bg-white rounded-lg shadow-md p-6">
         {#if current && 'label' in current}
             <form onsubmit={e=>{e.preventDefault();console.log('form submitted')}} >
                 <QuestionInput data={current} onSubmit={handleSubmit} />

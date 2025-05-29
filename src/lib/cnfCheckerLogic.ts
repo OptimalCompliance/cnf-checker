@@ -28,6 +28,7 @@ interface Question {
     id: number;
     label: string;
     config: QuestionConfig;
+    hint: string;
 }
 
 // Interfaces for return types
@@ -95,6 +96,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 1,
         label: 'Enter your company number',
         config: { type: 'text', pattern: '[0-9A-Z]{8}' },
+        hint: 'We use your company number to get previous accounting periods from Companies House.',
     } as Question;
 
     let periods: Period[];
@@ -109,6 +111,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 2,
         label: 'Choose a period',
         config: { type: 'period-select', options: periods },
+        hint: 'Claim periods beginning before 1 April 2023 don\'t require a CNF.',
     } as Question;
 
     // Early return if period starts before 1 April 2023
@@ -128,6 +131,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 3,
         label: 'Claim submission date',
         config: { type: 'date' },
+        hint: 'Claims submitted within 6 months of the accounting period end don\'t require a CNF.',
     } as Question;
 
     // Early return if claim submitted within notification period
@@ -145,6 +149,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 4,
         label: 'Has this company claimed R&D tax relief before?',
         config: { type: 'boolean' },
+        hint: 'First-time claimants are always required to submit a CNF.',
     } as Question;
 
     if (!(hasClaimed as boolean)) {
@@ -152,7 +157,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
             kind: 'success',
             cnf_required: true,
             deadline,
-            reason: 'A CNF is required because this is the company’s first R&D tax relief claim.',
+            reason: 'A CNF is required because this is the company\'s first R&D tax relief claim.',
         };
     }
 
@@ -161,6 +166,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 5,
         label: 'When was the most recent R&D claim submitted?',
         config: { type: 'date' },
+        hint: 'If your most recent claim was more than 3 years before the notification deadline, a CNF is required.',
     } as Question;
 
     // Check if recent claim is within 3 years of deadline
@@ -182,6 +188,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 6,
         label: 'Was any previous R&D claim rejected by HMRC?',
         config: { type: 'boolean' },
+        hint: 'Companies with previously rejected claims must submit a CNF for all future claims.',
     } as Question;
     if (claimRejected as boolean) {
         return {
@@ -197,6 +204,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 7,
         label: 'Have you amended any R&D claim for a period before 1 April 2023 on or after 1 April 2023?',
         config: { type: 'boolean' },
+        hint: 'Amendments to pre-2023 claims made after 1 April 2023 trigger CNF requirements for future claims.',
     } as Question;
     if (!(amendedClaim as boolean)) {
         return {
@@ -212,6 +220,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         id: 8,
         label: 'When was the amendment submitted?',
         config: { type: 'date' },
+        hint: 'The timing of the amendment determines whether a CNF is required for this claim.',
     } as Question;
     if (amendedDate && new Date(amendedDate as string) >= new Date('2023-04-01')) {
         return {
@@ -282,6 +291,16 @@ class FormManager {
 
     getCurrent(): Question | Result | null {
         return this.result || this.currentQuestion;
+    }
+
+    getCurrentState(): Record<number, unknown> {
+        const state: Record<number, unknown> = {};
+
+        for (const { questionId, response } of this.history) {
+            state[questionId] = response;
+        }
+
+        return state;
     }
 }
 

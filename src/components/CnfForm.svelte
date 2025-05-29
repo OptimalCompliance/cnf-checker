@@ -21,7 +21,7 @@
     }
 </script>
 
-<div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900 p-4">
+<div class="flex flex-col items-center justify-center bg-gray-100 text-gray-900 p-4">
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         {#if current && 'label' in current}
             <form onsubmit={e=>{e.preventDefault();console.log('form submitted')}} >
@@ -35,13 +35,7 @@
                     >
                         Back
                     </button>
-                    <button
-                            type="submit"
-                            disabled={!current}
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
-                    >
-                        Next
-                    </button>
+
                 </div>
             </form>
         {:else if current && 'kind' in current}

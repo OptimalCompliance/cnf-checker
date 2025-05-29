@@ -10,16 +10,29 @@
         data: Question;
         onSubmit: (value: string | Period | boolean | null) => void;
     } = $props();
+
+    // Generate a unique input ID based on the question type and ID
+    const inputId = `${data.config.type}-${data.id}`;
 </script>
 
 <div class="w-full max-w-md">
+    <!-- Common label for all input types -->
+    <label for={inputId} class="block text-2xl font-bold text-gray-900 mb-3">
+        Step {data.id}: {data.label}
+    </label>
+
     {#if data.config.type === 'text'}
-        <TextInput {data} onSubmit={(value) => onSubmit(value)} />
+        <TextInput {data} {inputId} onSubmit={(value) => onSubmit(value)} />
     {:else if data.config.type === 'period-select'}
-        <PeriodSelect {data} onSubmit={(value: Period) => onSubmit(value)} />
+        <PeriodSelect {data} {inputId} onSubmit={(value: Period) => onSubmit(value)} />
     {:else if data.config.type === 'date'}
-        <DateInput {data} onSubmit={(value) => onSubmit(value)} />
+        <DateInput {data} {inputId} onSubmit={(value) => onSubmit(value)} />
     {:else if data.config.type === 'boolean'}
-        <BooleanInput {data} onSubmit={(value) => onSubmit(value)} />
+        <BooleanInput {data} {inputId} onSubmit={(value) => onSubmit(value)} />
     {/if}
+
+    <!-- Display hint as a helpful caption -->
+    <p class="mt-2 text-sm text-gray-600 italic">
+        {data.hint}
+    </p>
 </div>

@@ -46,27 +46,7 @@ interface ErrorResult {
 
 type Result = CnfResult | ErrorResult;
 
-// Mock Companies House API response
-interface CompanyProfile {
-    accounting_reference_date: { day: number; month: number };
-    last_accounts: { period_end_on: string };
-    name: string;
-    company_number: string;
-}
-
-// Mock Companies House API call (replace with real API)
-async function getCompany(companyNumber: string): Promise<CompanyProfile> {
-    // In production: fetch from https://api.companieshouse.gov.uk/company/{companyNumber}
-    if (!companyNumber.match(/^[0-9A-Z]{8}$/)) {
-        throw new Error('Invalid company number');
-    }
-    return {
-        accounting_reference_date: { day: 31, month: 3 },
-        last_accounts: { period_end_on: '2025-03-31' },
-        name: 'Company Name Placeholder',
-        company_number: companyNumber,
-    };
-}
+import { getCompany, type CompanyProfile } from './companiesHouse';
 
 // Extract accounting periods
 function getPeriods(companyProfile: CompanyProfile): Period[] {

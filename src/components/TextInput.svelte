@@ -8,6 +8,9 @@
         onSubmit: (value: string) => void 
     } = $props();
     let value = $state('');
+    $effect(() => {
+        value = value.trim();
+    });
     let attemptedSubmit = $state(false);
 
     function handleSubmit() {

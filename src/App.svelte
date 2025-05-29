@@ -38,9 +38,9 @@
 
   <footer class="mt-8 text-center text-sm text-gray-600 p-4">
     {#if currentPage === 'form'}
-      <p>Need more information? <button on:click={() => navigateTo('rules')} class="text-blue-600 hover:underline">View CNF Rules Explanation</button></p>
+      <p>Need more information? <button onclick={() => navigateTo('rules')} class="text-blue-600 hover:underline">View CNF Rules Explanation</button></p>
     {:else}
-      <p><button on:click={() => navigateTo('form')} class="text-blue-600 hover:underline">← Back to CNF Checker</button></p>
+      <p><button onclick={() => navigateTo('form')} class="text-blue-600 hover:underline">← Back to CNF Checker</button></p>
     {/if}
   </footer>
 </main>

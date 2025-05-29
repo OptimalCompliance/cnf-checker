@@ -80,7 +80,7 @@
         {#if getCompanyNumber()}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(1)}
+                onclick={() => onQuestionClick && onQuestionClick(1)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit company number' : undefined}
@@ -92,7 +92,7 @@
         {#if getPeriod()}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(2)}
+                onclick={() => onQuestionClick && onQuestionClick(2)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit claim period' : undefined}
@@ -110,7 +110,7 @@
         {#if getSubmissionDate()}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(3)}
+                onclick={() => onQuestionClick && onQuestionClick(3)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit submission date' : undefined}
@@ -122,7 +122,7 @@
         {#if getHasClaimed() !== null}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(4)}
+                onclick={() => onQuestionClick && onQuestionClick(4)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit previous R&D claims' : undefined}
@@ -134,7 +134,7 @@
         {#if getRecentClaimDate()}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(5)}
+                onclick={() => onQuestionClick && onQuestionClick(5)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit most recent claim date' : undefined}
@@ -146,7 +146,7 @@
         {#if getClaimRejected() !== null}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(6)}
+                onclick={() => onQuestionClick && onQuestionClick(6)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit previous claim rejected' : undefined}
@@ -158,7 +158,7 @@
         {#if getAmendedClaim() !== null}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(7)}
+                onclick={() => onQuestionClick && onQuestionClick(7)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit amended pre-2023 claim' : undefined}
@@ -170,7 +170,7 @@
         {#if getAmendedDate()}
             <div 
                 class="context-item {onQuestionClick ? 'clickable' : ''}" 
-                on:click={() => onQuestionClick && onQuestionClick(8)}
+                onclick={() => onQuestionClick && onQuestionClick(8)}
                 role={onQuestionClick ? 'button' : undefined}
                 tabindex={onQuestionClick ? 0 : undefined}
                 title={onQuestionClick ? 'Click to edit amendment date' : undefined}

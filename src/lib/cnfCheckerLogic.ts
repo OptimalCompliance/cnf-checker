@@ -226,6 +226,23 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
         config: { type: 'date' },
         hint: 'The timing of the amendment determines whether a CNF is required for this claim.',
     } as Question;
+
+    // Check guidance error exception
+    const isInErrorPeriod = new Date(deadline) >= new Date("2024-09-08") &&
+        new Date(deadline) <= new Date("2024-11-30");
+    const isValidAmendedDate = amendedDate &&
+        new Date(amendedDate as string) >= new Date("2023-04-01") &&
+        new Date(amendedDate as string) <= new Date("2024-11-30");
+
+    if (isInErrorPeriod && isValidAmendedDate) {
+        return {
+            kind: 'success',
+            cnf_required: false,
+            deadline: null,
+            reason: 'No CNF required due to HMRC guidance error (CIRD183000, 8 Sep–30 Nov 2024). Contact randd.policy@hmrc.gov.uk with evidence of the amended claim.',
+        };
+    }
+
     if (amendedDate && new Date(amendedDate as string) >= new Date('2023-04-01')) {
         return {
             kind: 'success',

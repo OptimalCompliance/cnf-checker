@@ -1,7 +1,14 @@
 <script lang="ts">
-  // No script needed for static content
   import novelIcon from './assets/novel-icon.png'
   import CnfForm from "./components/CnfForm.svelte";
+  import RulesExplainer from "./components/RulesExplainer.svelte";
+
+  // Simple routing state
+  let currentPage = $state('form'); // 'form' or 'rules'
+
+  function navigateTo(page: string) {
+    currentPage = page;
+  }
 </script>
 
 <svelte:head>
@@ -22,7 +29,20 @@
       Determine if your company needs to submit a Claim Notification Form for HMRC R&D tax relief.
     </p>
   </header>
-  <CnfForm/>
+
+  {#if currentPage === 'form'}
+    <CnfForm/>
+  {:else if currentPage === 'rules'}
+    <RulesExplainer/>
+  {/if}
+
+  <footer class="mt-8 text-center text-sm text-gray-600 p-4">
+    {#if currentPage === 'form'}
+      <p>Need more information? <button on:click={() => navigateTo('rules')} class="text-blue-600 hover:underline">View CNF Rules Explanation</button></p>
+    {:else}
+      <p><button on:click={() => navigateTo('form')} class="text-blue-600 hover:underline">← Back to CNF Checker</button></p>
+    {/if}
+  </footer>
 </main>
 
 <style>

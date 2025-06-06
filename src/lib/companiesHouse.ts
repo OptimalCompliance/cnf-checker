@@ -3,7 +3,7 @@
 // Placeholder company profile to use when API calls fail
 export const PLACEHOLDER_COMPANY_PROFILE: CompanyProfile = {
     accounting_reference_date: { day: 31, month: 3 },
-    last_accounts: { period_end_on: '2024-03-31' },
+    last_accounts: { period_end_on: '2025-03-31' },
     name: 'Example Company Ltd',
     company_number: '12345678'
 };

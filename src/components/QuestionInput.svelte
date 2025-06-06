@@ -18,7 +18,7 @@
 <div class="w-full max-w-lg">
     <!-- Common label for all input types -->
     <label for={inputId} class="block text-2xl font-bold text-gray-900 mb-3">
-        Step {data.id}: {data.label}
+        Step {data.counter}: {data.label}
     </label>
 
     {#if data.config.type === 'text'}

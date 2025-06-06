@@ -29,6 +29,7 @@ interface Question {
     label: string;
     config: QuestionConfig;
     hint: string;
+    counter: number;
 }
 
 // Interfaces for return types
@@ -76,27 +77,68 @@ function calculateDeadline(endDate: string): string {
 
 // Async generator for CNF form logic
 async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
-    const companyNumber = yield {
+    let counter = 1; // Initialize counter
+
+    const useCompanyNumber = yield {
         id: 1,
-        label: 'Enter your company number',
-        config: { type: 'text', pattern: '[0-9A-Z]{8}' },
-        hint: 'We use your company number to get previous accounting periods from Companies House.',
+        label: 'Would you like to enter a company number to get periods automatically?',
+        config: { type: 'boolean' },
+        hint: 'You can either enter a company number or provide period dates directly.',
+        counter: counter++, // Add counter and increment
     } as Question;
 
-    let periods: Period[];
-    try {
-        const companyProfile = await getCompany(companyNumber as string);
-        periods = getPeriods(companyProfile);
-    } catch (error) {
-        return { kind: 'error', error: (error as Error).message };
+    let chosenPeriod: Period | unknown;
+
+    if (useCompanyNumber as boolean) {
+        // Original flow using company number
+        const companyNumber = yield {
+            id: 2,
+            label: 'Enter your company number',
+            config: { type: 'text', pattern: '[0-9A-Z]{8}' },
+            hint: 'We use your company number to get previous accounting periods from Companies House.',
+            counter: counter++,
+        } satisfies Question;
+
+        let periods: Period[];
+        try {
+            const companyProfile = await getCompany(companyNumber as string);
+            periods = getPeriods(companyProfile);
+        } catch (error) {
+            return { kind: 'error', error: (error as Error).message };
+        }
+
+        chosenPeriod = yield {
+            id: 3,
+            label: 'Choose a claim period',
+            config: { type: 'period-select', options: periods },
+            hint: 'Claim periods beginning before 1 April 2023 don\'t require a CNF.',
+            counter: counter++,
+        } satisfies Question;
+    } else {
+        // Alternative flow for direct period entry - ask for start date first
+        const startDate = yield {
+            id: 4,
+            label: 'Enter your claim period start date',
+            config: { type: 'date' },
+            hint: 'Enter the start date for your claim period (YYYY-MM-DD).',
+            counter: counter++,
+        } satisfies Question;
+
+        // Then ask for end date
+        const endDate = yield {
+            id: 5,
+            label: 'Enter your claim period end date',
+            config: { type: 'date' },
+            hint: 'Enter the end date for your claim period (YYYY-MM-DD).',
+            counter: counter++,
+        } satisfies Question;
+
+        // Combine the two dates into a Period object
+        chosenPeriod = {
+            start: startDate as string,
+            end: endDate as string
+        };
     }
-
-    const chosenPeriod = yield {
-        id: 2,
-        label: 'Choose a claim period',
-        config: { type: 'period-select', options: periods },
-        hint: 'Claim periods beginning before 1 April 2023 don\'t require a CNF.',
-    } as Question;
 
     // Early return if period starts before 1 April 2023
     if (new Date((chosenPeriod as Period).start) < new Date('2023-04-01')) {
@@ -112,11 +154,12 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
     // Check submission date
     const submissionDate = yield {
-        id: 3,
+        id: 6,
         label: 'Claim submission date',
         config: { type: 'date' },
         hint: 'Claims submitted within 6 months of the accounting period end don\'t require a CNF.',
-    } as Question;
+        counter: counter++,
+    } satisfies Question;
 
     // Early return if claim submitted within notification period
     if (submissionDate && new Date(submissionDate as string) <= new Date(deadline)) {
@@ -130,11 +173,12 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
     // Check previous claims
     const hasClaimed = yield {
-        id: 4,
+        id: 7,
         label: 'Has this company claimed R&D tax relief before?',
         config: { type: 'boolean' },
         hint: 'First-time claimants are always required to submit a CNF.',
-    } as Question;
+        counter: counter++,
+    } satisfies Question;
 
     if (!(hasClaimed as boolean)) {
         return {
@@ -147,11 +191,12 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
     // Check recent claim date
     const recentClaimDate = yield {
-        id: 5,
+        id: 8,
         label: 'When was the most recent R&D claim submitted?',
         config: { type: 'date' },
         hint: 'If your most recent claim was more than 3 years before the notification deadline, a CNF is required.',
-    } as Question;
+        counter: counter++,
+    } satisfies Question;
 
     // Check if recent claim is within 3 years of deadline
     const threeYearsBeforeDeadline = new Date(deadline);
@@ -169,11 +214,12 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
     // Check rejection
     const claimRejected = yield {
-        id: 6,
+        id: 9,
         label: 'Was any previous R&D claim rejected by HMRC?',
         config: { type: 'boolean' },
         hint: 'Companies with previously rejected claims must submit a CNF for all future claims.',
-    } as Question;
+        counter: counter++,
+    } satisfies Question;
     if (claimRejected as boolean) {
         return {
             kind: 'success',
@@ -185,11 +231,12 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
     // Check amendments
     const amendedClaim = yield {
-        id: 7,
+        id: 10,
         label: 'Have you amended any R&D claim for a period before 1 April 2023 on or after 1 April 2023?',
         config: { type: 'boolean' },
         hint: 'Amendments to pre-2023 claims made after 1 April 2023 trigger CNF requirements for future claims.',
-    } as Question;
+        counter: counter++,
+    } satisfies Question;
     if (!(amendedClaim as boolean)) {
         return {
             kind: 'success',
@@ -201,11 +248,12 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
 
     // Check amendment date
     const amendedDate = yield {
-        id: 8,
+        id: 11,
         label: 'When was the amendment submitted?',
         config: { type: 'date' },
         hint: 'The timing of the amendment determines whether a CNF is required for this claim.',
-    } as Question;
+        counter: counter++,
+    } satisfies Question;
 
     // Check guidance error exception
     const isInErrorPeriod = new Date(deadline) >= new Date("2024-09-08") &&

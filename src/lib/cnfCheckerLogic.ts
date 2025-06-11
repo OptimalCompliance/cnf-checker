@@ -1,3 +1,6 @@
+import { getCompany, type CompanyProfile } from './companiesHouse';
+import { calculateDeadline, isCnfRequiredByStartDate } from './timelineUtils';
+
 // Interfaces for question config options
 export interface TextConfig {
     type: 'text';
@@ -47,8 +50,6 @@ interface ErrorResult {
 
 type Result = CnfResult | ErrorResult;
 
-import { getCompany, type CompanyProfile } from './companiesHouse';
-
 // Extract accounting periods
 function getPeriods(companyProfile: CompanyProfile): Period[] {
     const { accounting_reference_date, last_accounts } = companyProfile;
@@ -66,13 +67,6 @@ function getPeriods(companyProfile: CompanyProfile): Period[] {
         });
     }
     return periods;
-}
-
-// Calculate deadline (6 months after period end)
-function calculateDeadline(endDate: string): string {
-    const date = new Date(endDate);
-    date.setMonth(date.getMonth() + 6);
-    return date.toISOString().split('T')[0]; // YYYY-MM-DD
 }
 
 // Async generator for CNF form logic
@@ -141,7 +135,7 @@ async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
     }
 
     // Early return if period starts before 1 April 2023
-    if (new Date((chosenPeriod as Period).start) < new Date('2023-04-01')) {
+    if (!isCnfRequiredByStartDate((chosenPeriod as Period).start)) {
         return {
             kind: 'success',
             cnf_required: false,

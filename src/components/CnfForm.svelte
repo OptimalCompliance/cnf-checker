@@ -2,6 +2,7 @@
 <script lang="ts">
     import QuestionInput from './QuestionInput.svelte';
     import AnswerContext from './AnswerContext.svelte';
+    import ClaimTimeline from './ClaimTimeline.svelte';
     import {createFormManager, type Period, type Question, type Result} from "../lib/cnfCheckerLogic";
 
     let manager = $state(createFormManager());
@@ -32,6 +33,7 @@
             <form onsubmit={e=>{e.preventDefault();console.log('form submitted')}} >
                 {#if Object.keys(currentState).length > 0}
                     <AnswerContext state={currentState} onQuestionClick={handleGoToQuestion} />
+                    <ClaimTimeline currentState={currentState} />
                 {/if}
                 <QuestionInput data={current} onSubmit={handleSubmit} />
 
@@ -43,6 +45,7 @@
                     {#if Object.keys(currentState).length > 0}
                         <div class="mb-4">
                             <AnswerContext state={currentState} onQuestionClick={handleGoToQuestion} />
+                            <ClaimTimeline currentState={currentState} />
                         </div>
                     {/if}
                     <p class="text-lg mb-2">
@@ -61,6 +64,7 @@
                     {#if Object.keys(currentState).length > 0}
                         <div class="mb-4">
                             <AnswerContext state={currentState} onQuestionClick={handleGoToQuestion} />
+                            <ClaimTimeline currentState={currentState} />
                         </div>
                     {/if}
                     <p class="text-lg">{current.error}</p>

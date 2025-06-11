@@ -3,12 +3,16 @@
 
     import type {DateConfig, Question} from "../lib/cnfCheckerLogic";
 
-    let { data, inputId, onSubmit }: { 
+    let { data, inputId, onChange }: { 
         data: Question & { config: DateConfig }, 
         inputId: string,
-        onSubmit: (value: string | null) => void 
+        onChange: (value: string | null) => void 
     } = $props();
     let value: string | null = $state(null);
+
+    function handleChange() {
+        onChange(value);
+    }
 </script>
 
 <div class="mb-6">
@@ -17,6 +21,6 @@
             id={inputId}
             bind:value
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-            onchange={() => onSubmit(value)}
+            onchange={handleChange}
     />
 </div>

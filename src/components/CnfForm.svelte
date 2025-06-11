@@ -10,6 +10,7 @@
 
     async function init() {
         current = await manager.start();
+        current = await manager.next(false) // avoiding the Companies House integration to start with
         currentState = manager.getCurrentState();
     }
     init();

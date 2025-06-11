@@ -3,20 +3,13 @@
 
     import type {Period, PeriodSelectConfig, Question} from "../lib/cnfCheckerLogic";
 
-    let { data, inputId, onSubmit }: { 
+    let { data, inputId, onChange }: { 
         data: Question & { config: PeriodSelectConfig }, 
         inputId: string,
-        onSubmit: (value: Period) => void 
+        onChange: (value: Period) => void 
     } = $props();
     let value = $state<Period | null>(null);
     let attempted = $state<boolean>(false);
-
-    function handleSubmit() {
-        attempted = true;
-        if (value) {
-            onSubmit(value);
-        }
-    }
 
     function formatDate(dateString: string): string {
         const date = new Date(dateString);
@@ -30,7 +23,9 @@
     function handleSelect(period: Period) {
         attempted = true;
         value = period;
-        handleSubmit();
+        if (value) {
+            onChange(value);
+        }
     }
 </script>
 

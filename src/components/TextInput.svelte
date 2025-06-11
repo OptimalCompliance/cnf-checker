@@ -2,23 +2,25 @@
 <script lang="ts">
     import type {Question, TextConfig} from "../lib/cnfCheckerLogic";
 
-    let { data, inputId, onSubmit }: { 
+    let { data, inputId, onChange }: { 
         data: Question & { config: TextConfig }, 
         inputId: string,
-        onSubmit: (value: string) => void 
+        onChange: (value: string) => void 
     } = $props();
     let value = $state('');
     $effect(() => {
         value = value.trim();
+        validateAndUpdate();
     });
-    let attemptedSubmit = $state(false);
+    let attemptedValidation = $state(false);
 
-    function handleSubmit() {
-        attemptedSubmit = true;
-        if (data.config.pattern && !new RegExp(data.config.pattern).test(value)) {
-            return;
+    function validateAndUpdate() {
+        attemptedValidation = true;
+        if (!data.config.pattern || new RegExp(data.config.pattern).test(value)) {
+            onChange(value);
+        } else {
+            onChange('');
         }
-        onSubmit(value);
     }
 </script>
 
@@ -30,13 +32,11 @@
             pattern={data.config.pattern}
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
             aria-describedby={`error-${data.id}`}
-            onkeydown={(e) => e.key === 'Enter' && handleSubmit()}
+            onchange={validateAndUpdate}
+            oninput={validateAndUpdate}
             required
     />
-    <p class="mt-1 text-sm text-gray-500">
-        Press Enter to proceed to the next step
-    </p>
-    {#if attemptedSubmit && data.config.pattern && value && !new RegExp(data.config.pattern).test(value)}
+    {#if attemptedValidation && data.config.pattern && value && !new RegExp(data.config.pattern).test(value)}
         <p id={`error-${data.id}`} class="mt-1 text-sm text-red-600">
             Invalid input format.
         </p>

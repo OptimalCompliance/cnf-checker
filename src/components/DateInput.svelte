@@ -10,6 +10,13 @@
     } = $props();
     let value: string | null = $state(null);
 
+    // Reset value when question changes
+    $effect(() => {
+        // Reference data.id directly to track question changes
+        data.id;
+        value = null;
+    });
+
     function handleChange() {
         onChange(value);
     }

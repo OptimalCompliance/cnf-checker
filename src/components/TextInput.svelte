@@ -8,6 +8,15 @@
         onChange: (value: string) => void 
     } = $props();
     let value = $state('');
+
+    // Reset value when question changes
+    $effect(() => {
+        // Reference data.id directly to track question changes
+        data.id;
+        value = '';
+        attemptedValidation = false;
+    });
+
     $effect(() => {
         value = value.trim();
         validateAndUpdate();

@@ -10,6 +10,13 @@
     } = $props();
     let value = $state<boolean | null>(null);
 
+    // Reset value when question changes
+    $effect(() => {
+        // Reference data.id directly to track question changes
+        data.id;
+        value = null;
+    });
+
     // Generate IDs for the radio buttons based on the inputId
     const trueId = `${inputId}-true`;
     const falseId = `${inputId}-false`;

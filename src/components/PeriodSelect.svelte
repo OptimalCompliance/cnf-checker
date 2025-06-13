@@ -11,6 +11,14 @@
     let value = $state<Period | null>(null);
     let attempted = $state<boolean>(false);
 
+    // Reset value when question changes
+    $effect(() => {
+        // Reference data.id directly to track question changes
+        data.id;
+        value = null;
+        attempted = false;
+    });
+
     function formatDate(dateString: string): string {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-GB', {
@@ -33,20 +41,23 @@
     <div class="w-full">
         <div class="flex flex-wrap gap-4" id={inputId}>
             {#each data.config.options as period}
-                <button 
-                    type="button"
-                    class="period-box flex-1 min-w-[150px] p-4 border rounded-md transition-colors duration-200 text-center {value === period ? 'selected' : ''}"
+                <div 
+                    role="button"
+                    tabindex="0"
+                    class="period-box flex-1 min-w-[150px] p-4 border rounded-md transition-colors duration-200 text-center"
+                    class:selected={value === period}
                     onclick={() => handleSelect(period)}
-                    aria-selected={value === period}
+                    onkeypress={(e) => e.key === 'Enter' && handleSelect(period)}
+                    aria-pressed={value === period}
                 >
-                    <div class="font-medium">
+                    <span class="block font-medium">
                         {formatDate(period.start)}
-                    </div>
-                    <div class="mt-1">to</div>
-                    <div class="font-medium mt-1">
+                    </span>
+                    <span class="block mt-1">to</span>
+                    <span class="block font-medium mt-1">
                         {formatDate(period.end)}
-                    </div>
-                </button>
+                    </span>
+                </div>
             {/each}
         </div>
         {#if !value && attempted}

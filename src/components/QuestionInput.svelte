@@ -15,6 +15,15 @@
     let currentValue = $state<string | Period | boolean | null>(null);
     let isValueSet = $state(false);
 
+    // Reset state when question changes
+    $effect(() => {
+        // Using data.id directly to detect question changes
+        data.id; // Reference data.id to track it
+        console.log(`Question changed to ID: ${data.id}`);
+        currentValue = null;
+        isValueSet = false;
+    });
+
     // Handler for when input value changes
     function handleChange(value: string | Period | boolean | null) {
         currentValue = value;

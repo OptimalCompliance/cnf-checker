@@ -28,12 +28,11 @@
 </script>
 
 <div class="flex flex-col items-center justify-center bg-gray-100 text-gray-900 p-4">
-    <div class="w-full max-w-xl bg-white rounded-lg shadow-md p-6">
+    <div class="max-w-xl bg-white rounded-lg shadow-md p-6">
         {#if current && 'label' in current}
             <form onsubmit={e=>{e.preventDefault();console.log('form submitted')}} >
                 {#if Object.keys(currentState).length > 0}
                     <AnswerContext state={currentState} onQuestionClick={handleGoToQuestion} />
-                    <ClaimTimeline currentState={currentState} />
                 {/if}
                 <QuestionInput data={current} onSubmit={handleSubmit} />
 
@@ -45,7 +44,6 @@
                     {#if Object.keys(currentState).length > 0}
                         <div class="mb-4">
                             <AnswerContext state={currentState} onQuestionClick={handleGoToQuestion} />
-                            <ClaimTimeline currentState={currentState} />
                         </div>
                     {/if}
                     <p class="text-lg mb-2">
@@ -64,7 +62,6 @@
                     {#if Object.keys(currentState).length > 0}
                         <div class="mb-4">
                             <AnswerContext state={currentState} onQuestionClick={handleGoToQuestion} />
-                            <ClaimTimeline currentState={currentState} />
                         </div>
                     {/if}
                     <p class="text-lg">{current.error}</p>
@@ -79,4 +76,9 @@
             {/if}
         {/if}
     </div>
+    {#if Object.keys(currentState).length > 0}
+        <div class="w-full mt-4">
+            <ClaimTimeline currentState={currentState} />
+        </div>
+    {/if}
 </div>

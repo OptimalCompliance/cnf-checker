@@ -71,7 +71,7 @@ function getPeriods(companyProfile: CompanyProfile): Period[] {
 
 // Async generator for CNF form logic
 async function* cnfFormLogic(): AsyncGenerator<Question, Result, unknown> {
-    let counter = 1; // Initialize counter
+    let counter = 0; // Initialize counter
 
     const useCompanyNumber = yield {
         id: 1,
